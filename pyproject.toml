@@ -1,0 +1,19 @@
+[project]
+name = "makeup"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "curt15", email = "71923079+curt15@users.noreply.github.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.4.2",
+]
+
+[project.scripts]
+makeup = "makeup:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"
