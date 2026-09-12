@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 authors = [
-    { name = "curt15", email = "71923079+curt15@users.noreply.github.com" }
+    { name = "ellainng", email = "299958882+ellainng@users.noreply.github.com" }
 ]
 requires-python = ">=3.11"
 dependencies = [
@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.scripts]
-makeup = "makeup:main"
+makeup = "makeup.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.1,<0.13.0"]
