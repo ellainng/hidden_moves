@@ -1,5 +1,7 @@
-# makeup
-a package for python3-specific common use-case programming utility  
+# hidden_moves
+a convention for **personal utility package**  + **executable scripts**
+
+common use-cases (for python3):
 
 a Python CLI for automation, commands, connectors, and scheduling.
 

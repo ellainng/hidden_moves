@@ -1,4 +1,4 @@
-# src/makeup/command_set.py
+# src/hidden_moves/command_set.py
 """ A safe base class for a related collection of click commands.
 
 The important distinction is:
