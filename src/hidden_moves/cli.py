@@ -1,12 +1,12 @@
 import click
 
-from makeup.cmd.commands import CmdCommands
+from hidden_moves.cmd.commands import CmdCommands
 
 
 
 @click.group()
 def main() -> None:
-	"""Makeup command-line tools."""
+	"""hidden_moves command-line tools."""
 
 
 main.add_command(CmdCommands().as_group())

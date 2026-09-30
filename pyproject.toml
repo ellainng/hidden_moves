@@ -1,5 +1,5 @@
 [project]
-name = "makeup"
+name = "hidden_moves"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.scripts]
-makeup = "makeup.cli:main"
+makeup = "hidden_moves.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.1,<0.13.0"]

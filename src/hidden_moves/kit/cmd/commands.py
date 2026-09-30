@@ -1,4 +1,4 @@
-# src/makeup/cmd/commands.py
+# src/hidden_moves/cmd/commands.py
 """ a module for direct execution of /usr/bin/ programs (and as named /+ aliased)
 	by the system (e.g. rather than os.listdir, cmd.ll) in Python.
 """ 
@@ -10,7 +10,7 @@ import subprocess
 
 import click
 
-from makeup.command_set import CommandSet, command
+from hidden_moves.command_set import CommandSet, command
 
 # import re
 # ps = Path('usr/bin/').iterdir()
