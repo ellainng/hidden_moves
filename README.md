@@ -130,6 +130,8 @@ retain full documentation; inspection never displays target or context values.
 Typed signatures also produce neutral input and output JSON Schemas. Unsupported
 signatures report `schema_errors` while remaining usable through ordinary Python.
 See the plugin contract for the supported type subset and explicit schema overrides.
+The [selected capability catalog](docs/CAPABILITY_CATALOG.md) provides shared
+structured validation and dispatch for consumer interfaces.
 
 ## Tests and lint
 
