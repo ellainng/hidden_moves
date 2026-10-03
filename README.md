@@ -126,6 +126,8 @@ does not promise static autocomplete; the underlying typed APIs remain available
 
 Focused behavior tests live in `tests/` and use standard-library `unittest`.
 The client tests inject a transport and make no real network requests.
+Pull requests also build and install the package, run the behavior suite on
+Python 3.11 and 3.13, and check both installed commands and module execution.
 
 ```sh
 PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
