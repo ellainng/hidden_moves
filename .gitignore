@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # environment specific
 .DS_Store
 
@@ -13,9 +12,6 @@ wheels/
 # Virtual environments
 .venv
 
-# personal environment 
-AGENTS.md
-=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -234,4 +230,3 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
->>>>>>> origin/master
