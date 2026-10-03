@@ -137,6 +137,8 @@ structured validation and dispatch for consumer interfaces.
 The optional [MCP adapter](packages/hidden-moves-mcp/README.md) exposes explicitly
 selected catalogs through a local stdio host. Its SDK dependency is separate from
 the core package.
+The separate [function-tool adapter](packages/hidden-moves-openai/README.md)
+exports the same catalog for Responses applications and supports offline dispatch.
 
 ## Tests and lint
 
