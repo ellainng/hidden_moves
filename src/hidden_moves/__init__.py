@@ -2,9 +2,11 @@
 
 from .core import (
 	ENTRY_POINT_GROUP,
+	MoveAnnotations,
 	MoveBindingError,
 	MoveCollisionError,
 	MoveError,
+	MoveDefinition,
 	Moves,
 	MoveSpec,
 	ProviderLoadError,
@@ -16,9 +18,11 @@ from .core import (
 
 __all__ = [
 	"ENTRY_POINT_GROUP",
+	"MoveAnnotations",
 	"MoveBindingError",
 	"MoveCollisionError",
 	"MoveError",
+	"MoveDefinition",
 	"MoveSpec",
 	"Moves",
 	"ProviderLoadError",

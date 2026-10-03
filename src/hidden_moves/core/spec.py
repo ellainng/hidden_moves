@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import inspect
 import keyword
-from collections.abc import Callable
-from dataclasses import dataclass
+from collections.abc import Callable, Mapping
+from dataclasses import dataclass, field
 from typing import Any
+
+from .definition import MoveAnnotations, freeze_metadata
 
 
 def _validate_component(component: str) -> None:
@@ -30,6 +32,8 @@ class MoveSpec:
 	target_types: tuple[type, ...] = ()
 	description: str | None = None
 	provider: str | None = None
+	annotations: MoveAnnotations = field(default_factory=MoveAnnotations)
+	metadata: Mapping[str, Any] = field(default_factory=dict)
 
 	def __post_init__(self) -> None:
 		_validate_component(self.name)
@@ -37,6 +41,13 @@ class MoveSpec:
 			raise TypeError("A move must contain a callable.")
 		if not isinstance(self.bind_target, bool):
 			raise TypeError("bind_target must be a boolean.")
+		if not isinstance(self.annotations, MoveAnnotations):
+			raise TypeError("annotations must be MoveAnnotations.")
+		for name in ("description", "provider"):
+			value = getattr(self, name)
+			if value is not None and not isinstance(value, str):
+				raise TypeError(f"{name} must be a string or None.")
+		object.__setattr__(self, "metadata", freeze_metadata(self.metadata))
 		if self.namespace is not None:
 			if not isinstance(self.namespace, str):
 				raise TypeError("A namespace must be a dotted string or None.")
@@ -57,7 +68,11 @@ class MoveSpec:
 
 	@property
 	def summary(self) -> str:
-		return self.description or (inspect.getdoc(self.func) or "").partition("\n")[0]
+		return self.documentation.partition("\n")[0]
+
+	@property
+	def documentation(self) -> str:
+		return self.description if self.description is not None else (inspect.getdoc(self.func) or "")
 
 	@property
 	def is_async(self) -> bool:

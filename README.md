@@ -115,12 +115,18 @@ explicit built-in move `notes.obsidian.export_index`.
 - `moves.moves()` returns definitions sorted by qualified name.
 - `moves.knows("io.json.dumps")` reports registration, including unbound moves.
 - `moves.resolve("io.json.dumps")` returns the callable for this target.
+- `moves.describe("io.json.dumps")` returns a structured `MoveDefinition`.
 - `moves.explain("io.json.dumps")` reports source, signature, binding, and async metadata.
 - `dir(moves)` and `dir(moves.io)` include registered namespace members.
 
 Async callables retain their awaitable results. Use `await moves.operation(...)`;
 Hidden Moves does not run an event loop on your behalf. Dynamic namespace access
 does not promise static autocomplete; the underlying typed APIs remain available.
+
+Registration can include `MoveAnnotations(read_only=True, destructive=False)` and
+JSON-compatible `metadata`. Behavioral hints default to unknown and leave invocation
+policy to consumers. Metadata is copied deeply and stored immutably. Descriptions
+retain full documentation; inspection never displays target or context values.
 
 ## Tests and lint
 

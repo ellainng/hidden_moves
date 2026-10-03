@@ -1,6 +1,7 @@
 """Generic capability machinery with no CLI or domain dependencies."""
 
 from .discovery import ENTRY_POINT_GROUP, discover_providers, load_provider
+from .definition import MoveAnnotations, MoveDefinition
 from .errors import (
 	MoveBindingError,
 	MoveCollisionError,
@@ -14,9 +15,11 @@ from .spec import MoveSpec
 
 __all__ = [
 	"ENTRY_POINT_GROUP",
+	"MoveAnnotations",
 	"MoveBindingError",
 	"MoveCollisionError",
 	"MoveError",
+	"MoveDefinition",
 	"MoveSpec",
 	"Moves",
 	"ProviderLoadError",
