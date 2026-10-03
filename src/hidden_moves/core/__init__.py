@@ -6,6 +6,7 @@ from .errors import (
 	MoveBindingError,
 	MoveCollisionError,
 	MoveError,
+	MoveSchemaError,
 	ProviderLoadError,
 	UnknownMoveError,
 )
@@ -19,6 +20,7 @@ __all__ = [
 	"MoveBindingError",
 	"MoveCollisionError",
 	"MoveError",
+	"MoveSchemaError",
 	"MoveDefinition",
 	"MoveSpec",
 	"Moves",

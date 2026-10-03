@@ -17,5 +17,9 @@ class MoveBindingError(MoveError, TypeError):
 	"""The current target cannot be bound to a move."""
 
 
+class MoveSchemaError(MoveError, ValueError):
+	"""A Python type or value cannot be described by the supported schema subset."""
+
+
 class ProviderLoadError(MoveError):
 	"""An explicitly selected provider could not be loaded."""

@@ -11,6 +11,7 @@ from typing import Any
 from .definition import MoveAnnotations, MoveDefinition
 from .errors import MoveBindingError
 from .registry import Registry
+from .schema import describe_schemas
 from .spec import MoveSpec
 
 _UNBOUND = object()
@@ -96,6 +97,8 @@ class Moves(_Namespace):
 		provider: str | None = None,
 		annotations: MoveAnnotations | None = None,
 		metadata: Mapping[str, Any] | None = None,
+		input_schema: Mapping[str, Any] | None = None,
+		output_schema: Mapping[str, Any] | None = None,
 		replace: bool = False,
 	) -> MoveSpec:
 		public_name = name if name is not None else getattr(func, "__name__", None)
@@ -112,6 +115,8 @@ class Moves(_Namespace):
 				provider=provider,
 				annotations=annotations if annotations is not None else MoveAnnotations(),
 				metadata=metadata if metadata is not None else {},
+				input_schema=input_schema,
+				output_schema=output_schema,
 			),
 			replace=replace,
 		)
@@ -134,10 +139,13 @@ class Moves(_Namespace):
 			func = self._bind(spec)
 		except MoveBindingError as error:
 			binding_error = str(error)
+			if spec.bind_target:
+				func = partial(spec.func, _UNBOUND)
 		try:
 			signature = str(inspect.signature(func))
 		except (TypeError, ValueError):
 			signature = None
+		schemas = describe_schemas(func, input_schema=spec.input_schema, output_schema=spec.output_schema)
 		return MoveDefinition(
 			name=spec.qualified_name,
 			source=spec.source,
@@ -150,6 +158,9 @@ class Moves(_Namespace):
 			binding_error=binding_error,
 			annotations=spec.annotations,
 			metadata=spec.metadata,
+			input_schema=schemas.input_schema,
+			output_schema=schemas.output_schema,
+			schema_errors=schemas.errors,
 		)
 
 	def explain(self, name: str) -> dict[str, Any]:

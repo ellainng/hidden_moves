@@ -34,6 +34,8 @@ class MoveSpec:
 	provider: str | None = None
 	annotations: MoveAnnotations = field(default_factory=MoveAnnotations)
 	metadata: Mapping[str, Any] = field(default_factory=dict)
+	input_schema: Mapping[str, Any] | None = None
+	output_schema: Mapping[str, Any] | None = None
 
 	def __post_init__(self) -> None:
 		_validate_component(self.name)
@@ -48,6 +50,12 @@ class MoveSpec:
 			if value is not None and not isinstance(value, str):
 				raise TypeError(f"{name} must be a string or None.")
 		object.__setattr__(self, "metadata", freeze_metadata(self.metadata))
+		for name in ("input_schema", "output_schema"):
+			value = getattr(self, name)
+			if value is not None:
+				object.__setattr__(self, name, freeze_metadata(value))
+		if self.input_schema is not None and self.input_schema.get("type") != "object":
+			raise ValueError("input_schema must describe an object.")
 		if self.namespace is not None:
 			if not isinstance(self.namespace, str):
 				raise TypeError("A namespace must be a dotted string or None.")

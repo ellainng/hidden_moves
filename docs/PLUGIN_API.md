@@ -64,6 +64,28 @@ Target and context values are excluded. Signatures may be unavailable for opaque
 callables. Async metadata identifies declared coroutine functions and async callable
 objects; synchronous functions may also return awaitables, which pass through unchanged.
 
+## Typed schemas
+
+Definitions include `input_schema`, optional `output_schema`, and `schema_errors`.
+Inference uses JSON Schema 2020-12 and supports primitives, `Any`, unions/optional
+values, lists/sequences, string-keyed dictionaries/mappings, literals, and enums
+with JSON scalar values. `Annotated` preserves its underlying type. Inputs are
+closed objects whose required keys follow Python defaults. Accepting `None` does
+not make a parameter optional. Injected targets and already-bound method receivers
+are omitted, including when the current container cannot supply the target.
+
+Missing annotations, unsupported types, positional-only or variadic parameters,
+unavailable signatures, and non-JSON defaults produce diagnostics. They do not
+prevent registration or direct Python resolution. Input and output schemas are
+derived separately. Explicit `input_schema=` and `output_schema=` overrides are
+copied into the definition; input schemas must describe objects. An override is a
+description, not an assertion that every consumer can validate that schema or
+adapt a positional-only signature. Consumers must document their supported subset.
+
+Annotation resolution uses Python's `get_type_hints()` on explicitly registered,
+trusted code. Forward annotation expressions are Python code; providers are not
+sandboxed. The capability itself is never called to derive its schemas.
+
 ## External providers
 
 An external package advertises an integration in its own `pyproject.toml`:
