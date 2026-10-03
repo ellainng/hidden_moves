@@ -14,7 +14,7 @@ repos = {
 		'training',
 		'jamf',
 		'machine_learning_andrew_ng',
-		'modern-apis-with-fastapi-bk',
+		'modern-api-with-fastapi-bk',
 		'pytest-bk',
 		'sqlconn',
 		'pn_scrape',

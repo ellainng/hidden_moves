@@ -25,7 +25,7 @@ def command(
 	"""Mark a CommandSet method as a Click command."""
 
 	def decorate(method: Callable[..., Any]) -> Callable[..., Any]:
-		method.__makeup_command__ = {
+		method.__hidden_moves_command__ = {
 			"name": name,
 			"options": command_options,
 		}
@@ -53,7 +53,7 @@ class CommandSet:
 			self,
 			predicate=inspect.ismethod,
 		):
-			metadata = getattr(method, "__makeup_command__", None)
+			metadata = getattr(method, "__hidden_moves_command__", None)
 
 			if metadata is None:
 				continue
