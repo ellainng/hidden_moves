@@ -134,6 +134,9 @@ signatures report `schema_errors` while remaining usable through ordinary Python
 See the plugin contract for the supported type subset and explicit schema overrides.
 The [selected capability catalog](docs/CAPABILITY_CATALOG.md) provides shared
 structured validation and dispatch for consumer interfaces.
+The optional [MCP adapter](packages/hidden-moves-mcp/README.md) exposes explicitly
+selected catalogs through a local stdio host. Its SDK dependency is separate from
+the core package.
 
 ## Tests and lint
 

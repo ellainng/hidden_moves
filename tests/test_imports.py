@@ -33,6 +33,7 @@ class ImportTests(unittest.TestCase):
 			):
 				import hidden_moves
 				assert "click" not in sys.modules, "core imported Click"
+				assert "mcp" not in sys.modules, "core imported an optional adapter SDK"
 				for module in (
 					"hidden_moves.adapters",
 					"hidden_moves.builtins",
