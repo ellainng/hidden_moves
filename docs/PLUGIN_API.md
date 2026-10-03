@@ -86,6 +86,14 @@ Annotation resolution uses Python's `get_type_hints()` on explicitly registered,
 trusted code. Forward annotation expressions are Python code; providers are not
 sandboxed. The capability itself is never called to derive its schemas.
 
+Non-recursive dataclasses and TypedDict models produce inline object schemas.
+Dataclass input fields follow the generated constructor: required fields have no
+default or default factory, and `init=False` fields are output-only. Default
+factories are never called during inspection. Output schemas include all dataclass
+fields. TypedDict required and optional fields honor `Required`/`NotRequired`,
+including with postponed annotations. Recursive models and custom constructors
+that differ from dataclass init fields need an explicit adapter or schema.
+
 ## External providers
 
 An external package advertises an integration in its own `pyproject.toml`:

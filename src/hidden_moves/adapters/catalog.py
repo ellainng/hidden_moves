@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, is_dataclass
 from enum import Enum
 from types import MappingProxyType, UnionType
-from typing import Annotated, Any, Union, get_args, get_origin
+from typing import Annotated, Any, NotRequired, Required, Union, get_args, get_origin, get_type_hints, is_typeddict
 
 from hidden_moves import MoveDefinition, Moves, MoveSchemaError, UnknownMoveError
 from hidden_moves.core.schema import callable_hints, json_value, schema_for
@@ -20,7 +20,7 @@ def _python_value(annotation: Any, value: Any) -> Any:
 	"""Restore enum values and lossless integers at the JSON-to-Python boundary."""
 	origin = get_origin(annotation)
 	arguments = get_args(annotation)
-	if origin is Annotated:
+	if origin in (Annotated, Required, NotRequired):
 		return _python_value(arguments[0], value)
 	if origin in (Union, UnionType):
 		for option in arguments:
@@ -29,6 +29,10 @@ def _python_value(annotation: Any, value: Any) -> Any:
 				return _python_value(option, value)
 			except (ValueValidationError, MoveSchemaError):
 				continue
+	if isinstance(annotation, type) and (is_dataclass(annotation) or is_typeddict(annotation)):
+		hints = get_type_hints(annotation, include_extras=True)
+		values = {key: _python_value(hints.get(key, Any), item) for key, item in value.items()}
+		return values if is_typeddict(annotation) else annotation(**values)
 	if isinstance(annotation, type) and issubclass(annotation, Enum):
 		return annotation(value)
 	if annotation is int and type(value) is float and value.is_integer():

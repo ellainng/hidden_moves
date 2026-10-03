@@ -38,6 +38,8 @@ The supported schema keywords are `$schema`, `title`, `description`, `default`,
 and `items`. Unknown keywords are rejected when constructing a catalog. This is
 a documented subset, not a general JSON Schema validator. Schemas with `$ref`,
 model definitions, formats, or additional constraints need another consumer.
+Inline schemas for non-recursive dataclasses and TypedDict models use the same
+supported object keywords.
 
 Arguments must be finite JSON-compatible objects. Required properties, nested
 containers, allowed values, extra properties, and JSON types are checked before
@@ -47,6 +49,13 @@ integer parameters. Enum values are restored to enum members, including inside
 supported containers and unions. Other values retain their JSON forms. String
 numbers are not converted. Omitted arguments use Python defaults; schema defaults
 remain descriptive and are not injected.
+
+Annotated dataclass inputs are constructed from their validated fields, using their
+ordinary constructors and defaults. Nested dataclasses, supported containers, and
+unions are restored recursively. TypedDict inputs remain dictionaries, with nested
+annotated model values restored. Dataclass results serialize to their declared
+fields; computed `init=False` fields appear in output and cannot be supplied as
+automatically inferred inputs. Pydantic and recursive model adapters are deferred.
 
 `invoke()` returns the ordinary Python result. Awaitable results pass through;
 the consuming CLI or transport must await them before calling `serialize_result()`.
