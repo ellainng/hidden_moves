@@ -8,6 +8,7 @@ from functools import partial
 from types import MappingProxyType
 from typing import Any
 
+from .definition import MoveAnnotations, MoveDefinition
 from .errors import MoveBindingError
 from .registry import Registry
 from .spec import MoveSpec
@@ -93,6 +94,8 @@ class Moves(_Namespace):
 		target_types: tuple[type, ...] = (),
 		description: str | None = None,
 		provider: str | None = None,
+		annotations: MoveAnnotations | None = None,
+		metadata: Mapping[str, Any] | None = None,
 		replace: bool = False,
 	) -> MoveSpec:
 		public_name = name if name is not None else getattr(func, "__name__", None)
@@ -107,6 +110,8 @@ class Moves(_Namespace):
 				target_types=target_types,
 				description=description,
 				provider=provider,
+				annotations=annotations if annotations is not None else MoveAnnotations(),
+				metadata=metadata if metadata is not None else {},
 			),
 			replace=replace,
 		)
@@ -120,8 +125,8 @@ class Moves(_Namespace):
 	def resolve(self, name: str) -> Callable[..., Any]:
 		return self._bind(self._registry.resolve(name))
 
-	def explain(self, name: str) -> dict[str, object]:
-		"""Describe a move without invoking it or displaying target/config values."""
+	def describe(self, name: str) -> MoveDefinition:
+		"""Inspect a capability without invoking it or displaying target/config values."""
 		spec = self._registry.resolve(name)
 		binding_error = None
 		func = spec.func
@@ -133,14 +138,20 @@ class Moves(_Namespace):
 			signature = str(inspect.signature(func))
 		except (TypeError, ValueError):
 			signature = None
-		return {
-			"name": spec.qualified_name,
-			"source": spec.source,
-			"description": spec.summary,
-			"signature": signature,
-			"bind_target": spec.bind_target,
-			"target_types": tuple(target_type.__name__ for target_type in spec.target_types),
-			"is_async": spec.is_async,
-			"available": binding_error is None,
-			"binding_error": binding_error,
-		}
+		return MoveDefinition(
+			name=spec.qualified_name,
+			source=spec.source,
+			description=spec.documentation,
+			signature=signature,
+			bind_target=spec.bind_target,
+			target_types=tuple(target_type.__name__ for target_type in spec.target_types),
+			is_async=spec.is_async,
+			available=binding_error is None,
+			binding_error=binding_error,
+			annotations=spec.annotations,
+			metadata=spec.metadata,
+		)
+
+	def explain(self, name: str) -> dict[str, Any]:
+		"""Return a fresh JSON-compatible view of a capability definition."""
+		return self.describe(name).to_dict()

@@ -10,6 +10,7 @@ from .spec import MoveSpec
 # These are the public attributes of the root Moves container.
 _RESERVED_ROOT_NAMES = frozenset({
 	"context",
+	"describe",
 	"explain",
 	"knows",
 	"learn",

@@ -19,6 +19,13 @@ explicit `bind_target`, optional `target_types`, description, and provider sourc
 Names must be public Python identifiers. Names beginning with underscores and
 Python keywords are rejected.
 
+Definitions may also carry `MoveAnnotations` and application `metadata`.
+Annotations describe `read_only`, `destructive`, `idempotent`, and `external`
+behavior; each defaults to `None`, meaning unknown. These are descriptive hints,
+and consumers decide authorization. Metadata accepts finite JSON-compatible
+values with string keys. It is copied deeply and stored immutably; keep credentials
+and other private configuration in application context instead.
+
 `Registry.register(spec)` registers one definition. `register_many(specs)` validates
 the entire batch before publishing changes. A callable and a namespace cannot
 occupy the same path. Container API names are reserved at the root. Duplicate
@@ -46,7 +53,12 @@ attribute access. Unknown attributes raise `AttributeError`; unknown explicit
 lookups raise `UnknownMoveError`. Missing or incompatible targets raise
 `MoveBindingError`.
 
-`explain()` inspects a move without calling it. Its `available` field reports target
+`describe()` returns a frozen `MoveDefinition` without calling the move. It includes
+the full explicit description or docstring, signature, source, binding information,
+async status, annotations, and metadata. `definition.to_dict()` and `explain()`
+return fresh JSON-compatible views; changing a view does not change registrations.
+`explain()` preserves its existing inspection fields and adds annotations and metadata.
+The `available` field reports target
 binding compatibility, not dependency health, credentials, or remote service status.
 Target and context values are excluded. Signatures may be unavailable for opaque
 callables. Async metadata identifies declared coroutine functions and async callable
