@@ -116,6 +116,10 @@ invocation. Missing or ambiguous provider names fail before a provider is loaded
 External moves are available through the Python API and CLI inspection; arbitrary
 Python signatures are not automatically converted into command-line arguments.
 
+The [installable text example](../examples/text-plugin/README.md) demonstrates
+actual entry-point discovery, explicit activation, provider provenance, collision
+rollback, and CLI invocation. Its helper remains importable without Hidden Moves.
+
 ## Deferred decisions
 
 Lifecycle hooks, dependency graphs, persistent registries, type-stub generation,
