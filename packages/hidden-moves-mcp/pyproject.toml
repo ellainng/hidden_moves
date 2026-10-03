@@ -1,0 +1,17 @@
+[project]
+name = "hidden-moves-mcp"
+version = "0.1.0"
+description = "Expose explicitly selected Python capabilities through MCP."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "hidden_moves>=0.1.0",
+    "mcp>=2.3.0,<3",
+]
+
+[project.scripts]
+hidden-moves-mcp = "hidden_moves_mcp.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"
