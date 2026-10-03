@@ -65,3 +65,13 @@ these failures into their own protocol or terminal representation.
 Behavioral annotations are descriptive hints. The application chooses which names
 may be exposed and whether a call needs authorization. The catalog does not infer
 permissions from `read_only` or silently expose installed providers.
+
+## CLI consumer
+
+`hidden-moves moves list --json` emits complete definitions without calling them.
+`hidden-moves moves show NAME` describes one definition. Explicit JSON invocation
+uses `hidden-moves moves call NAME --arguments '{"value": "Hello World"}'`.
+The CLI selects that one name, checks input before execution, awaits results in
+its own event loop when necessary, and prints validated JSON. Existing domain
+commands remain available for capabilities that need a specialized interface.
+External providers must still be explicitly enabled with `--plugin NAME`.

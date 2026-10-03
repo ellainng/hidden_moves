@@ -48,6 +48,73 @@ class CliTests(unittest.TestCase):
 		self.assertFalse(details["available"])
 		self.assertTrue(details["bind_target"])
 
+	def test_json_listing_reports_schemas_without_invocation(self):
+		def operation(value: str) -> str:
+			raise AssertionError("listing executed a capability")
+
+		entry = EntryPoint("example", "example:provide", ENTRY_POINT_GROUP)
+		with (
+			patch("hidden_moves.cli.discover_providers", return_value=(entry,)),
+			patch.object(EntryPoint, "load", return_value=lambda: (MoveSpec("operation", operation),)),
+		):
+			result = self.runner.invoke(main, ["--plugin", "example", "moves", "list", "--json"])
+		self.assertEqual(result.exit_code, 0, result.output)
+		definitions = json.loads(result.output)
+		self.assertEqual([item["name"] for item in definitions], sorted(item["name"] for item in definitions))
+		definition = next(item for item in definitions if item["name"] == "operation")
+		self.assertEqual(definition["input_schema"]["required"], ["value"])
+
+	def test_generic_call_uses_the_catalog_and_returns_json(self):
+		result = self.runner.invoke(main, ["moves", "call", "text.slugify", "--arguments", '{"value": "Hello World"}'])
+		self.assertEqual(result.exit_code, 0, result.output)
+		self.assertEqual(json.loads(result.output), "hello-world")
+
+	def test_bad_json_and_invalid_arguments_fail_before_execution(self):
+		def operation(value: str) -> str:
+			raise AssertionError("invalid arguments executed")
+
+		entry = EntryPoint("example", "example:provide", ENTRY_POINT_GROUP)
+		with (
+			patch("hidden_moves.cli.discover_providers", return_value=(entry,)),
+			patch.object(EntryPoint, "load", return_value=lambda: (MoveSpec("operation", operation),)),
+		):
+			for arguments in ("{broken", "[]", "{}", '{"value": 1}', '{"value": "ok", "extra": 1}'):
+				with self.subTest(arguments=arguments):
+					result = self.runner.invoke(main, ["--plugin", "example", "moves", "call", "operation", "--arguments", arguments])
+					self.assertNotEqual(result.exit_code, 0)
+					self.assertNotIn("invalid arguments executed", result.output)
+
+	def test_generic_call_reports_missing_binding(self):
+		result = self.runner.invoke(main, ["moves", "call", "io.json.dumps"])
+		self.assertEqual(result.exit_code, 1)
+		self.assertIn("requires Moves", result.output)
+
+	def test_generic_call_awaits_async_providers_in_the_cli(self):
+		async def add(value: int) -> int:
+			return value + 1
+
+		entry = EntryPoint("example", "example:provide", ENTRY_POINT_GROUP)
+		with (
+			patch("hidden_moves.cli.discover_providers", return_value=(entry,)),
+			patch.object(EntryPoint, "load", return_value=lambda: (MoveSpec("add", add),)),
+		):
+			result = self.runner.invoke(main, ["--plugin", "example", "moves", "call", "add", "--arguments", '{"value": 2}'])
+		self.assertEqual(result.exit_code, 0, result.output)
+		self.assertEqual(json.loads(result.output), 3)
+
+	def test_capability_failure_has_a_terminal_error(self):
+		def failure() -> None:
+			raise RuntimeError("example failure")
+
+		entry = EntryPoint("example", "example:provide", ENTRY_POINT_GROUP)
+		with (
+			patch("hidden_moves.cli.discover_providers", return_value=(entry,)),
+			patch.object(EntryPoint, "load", return_value=lambda: (MoveSpec("failure", failure),)),
+		):
+			result = self.runner.invoke(main, ["--plugin", "example", "moves", "call", "failure"])
+		self.assertEqual(result.exit_code, 1)
+		self.assertIn("example failure", result.output)
+
 	def test_system_flags_are_forwarded_and_helpers_are_not_commands(self):
 		with patch("hidden_moves.kit.cmd.commands.subprocess.run") as run:
 			run.return_value = subprocess.CompletedProcess(["ls"], 0)
