@@ -15,7 +15,9 @@ Python 3.11 or newer is required. Click is the only production dependency.
 uv sync
 uv run hidden-moves --help
 uv run hidden-moves moves list
+uv run hidden-moves moves list --json
 uv run hidden-moves moves show io.json.dumps
+uv run hidden-moves moves call text.slugify --arguments '{"value": "Hello World"}'
 uv run hidden-moves text slugify 'Héllo, World!'
 uv run hidden-moves json dumps '{"value": 1}' --indent 2
 uv run hidden-moves cmd run ls -lahC .
