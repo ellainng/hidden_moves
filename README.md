@@ -6,10 +6,13 @@ useful through ordinary imports; they do not need to inherit from Hidden Moves c
 
 The API is experimental. See [the implemented plugin contract](docs/PLUGIN_API.md)
 for registration, binding, discovery, and extraction boundaries.
+The [usage and readiness guide](docs/USAGE.md) walks one ordinary function through
+Python, inspection, CLI, MCP, and function-tool dispatch.
 
 ## Setup and commands
 
-Python 3.11 or newer is required. Click is the only production dependency.
+Python 3.11 or newer is required. Click is the core distribution's only runtime
+dependency; registry and schema modules use the standard library.
 
 ```sh
 uv sync
