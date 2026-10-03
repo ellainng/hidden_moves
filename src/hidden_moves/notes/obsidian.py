@@ -1,44 +1,39 @@
+"""Export an Obsidian vault's top-level notes when explicitly requested."""
 
-""" a module for reading in an Obsidian Vault and creating a file (index.html)
-    with links to each of the .md files in the vault- formatted for use in Notes.app etc. 
-""" 
-import os
+from __future__ import annotations
 
-
-os.chdir("/Users/curtis/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian")
-
-print("Obsidian Vault (.md): \n", os.listdir())
+from html import escape
+from pathlib import Path
+from urllib.parse import urlencode
 
 
-links = {}
-for f in os.listdir():
-    if f.endswith(".md"):
-        name = f.split(".")[0]
-        l_name = name.replace(" ", "%20")
-        link = f"obsidian://open?vault=Obsidian&file={l_name}"
-        links.update({name: link})
-        print("-> ", link)
-
-with open("obsidian_index.html", "w") as f:
-
-    f.write("""
-
-    <!DOCTYPE html>
-            
-    <html>
-            
-    <body>
-
-    <h1>Obsidian Index</h1>
-
-    <ul>
-
-    """)
-
-    for name, link in sorted(links.items()):
-
-        f.write(f'<li><a href="{link}">{name}</a></li>\n')
-
-
-
-
+def export_index(
+	vault: str | Path,
+	destination: str | Path | None = None,
+	*,
+	vault_name: str | None = None,
+) -> Path:
+	"""Write a complete HTML index without changing the working directory."""
+	root = Path(vault).expanduser()
+	if not root.is_dir():
+		raise NotADirectoryError(f"Not an Obsidian vault directory: {root}")
+	output = Path(destination) if destination is not None else root / "obsidian_index.html"
+	items = []
+	for note in sorted(root.glob("*.md"), key=lambda path: path.name):
+		if not note.is_file():
+			continue
+		query = urlencode({
+			"vault": vault_name if vault_name is not None else root.name,
+			"file": note.stem,
+		})
+		link = escape(f"obsidian://open?{query}", quote=True)
+		items.append(f'<li><a href="{link}">{escape(note.stem)}</a></li>')
+	output.write_text(
+		"<!DOCTYPE html>\n<html>\n<head><meta charset=\"utf-8\">"
+		"<title>Obsidian Index</title></head>\n<body>\n"
+		"<h1>Obsidian Index</h1>\n<ul>\n"
+		+ "\n".join(items)
+		+ "\n</ul>\n</body>\n</html>\n",
+		encoding="utf-8",
+	)
+	return output

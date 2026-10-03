@@ -1,18 +1,16 @@
-"""Reusable Python capabilities, explicitly registered and bound."""
+"""Generic capability machinery with no CLI or domain dependencies."""
 
-from .core import (
-	ENTRY_POINT_GROUP,
+from .discovery import ENTRY_POINT_GROUP, discover_providers, load_provider
+from .errors import (
 	MoveBindingError,
 	MoveCollisionError,
 	MoveError,
-	Moves,
-	MoveSpec,
 	ProviderLoadError,
-	Registry,
 	UnknownMoveError,
-	discover_providers,
-	load_provider,
 )
+from .moves import Moves
+from .registry import Registry
+from .spec import MoveSpec
 
 __all__ = [
 	"ENTRY_POINT_GROUP",
