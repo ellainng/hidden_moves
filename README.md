@@ -127,6 +127,9 @@ Registration can include `MoveAnnotations(read_only=True, destructive=False)` an
 JSON-compatible `metadata`. Behavioral hints default to unknown and leave invocation
 policy to consumers. Metadata is copied deeply and stored immutably. Descriptions
 retain full documentation; inspection never displays target or context values.
+Typed signatures also produce neutral input and output JSON Schemas. Unsupported
+signatures report `schema_errors` while remaining usable through ordinary Python.
+See the plugin contract for the supported type subset and explicit schema overrides.
 
 ## Tests and lint
 

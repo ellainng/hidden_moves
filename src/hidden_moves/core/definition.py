@@ -84,9 +84,16 @@ class MoveDefinition:
 	binding_error: str | None
 	annotations: MoveAnnotations = field(default_factory=MoveAnnotations)
 	metadata: Mapping[str, Any] = field(default_factory=dict)
+	input_schema: Mapping[str, Any] | None = None
+	output_schema: Mapping[str, Any] | None = None
+	schema_errors: tuple[str, ...] = ()
 
 	def __post_init__(self) -> None:
 		object.__setattr__(self, "metadata", freeze_metadata(self.metadata))
+		for name in ("input_schema", "output_schema"):
+			value = getattr(self, name)
+			if value is not None:
+				object.__setattr__(self, name, freeze_metadata(value))
 
 	def to_dict(self) -> dict[str, Any]:
 		return {
@@ -101,4 +108,7 @@ class MoveDefinition:
 			"binding_error": self.binding_error,
 			"annotations": self.annotations.to_dict(),
 			"metadata": metadata_dict(self.metadata),
+			"input_schema": metadata_dict(self.input_schema) if self.input_schema is not None else None,
+			"output_schema": metadata_dict(self.output_schema) if self.output_schema is not None else None,
+			"schema_errors": self.schema_errors,
 		}
