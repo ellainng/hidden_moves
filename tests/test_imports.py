@@ -34,6 +34,7 @@ class ImportTests(unittest.TestCase):
 				import hidden_moves
 				assert "click" not in sys.modules, "core imported Click"
 				for module in (
+					"hidden_moves.adapters",
 					"hidden_moves.builtins",
 					"hidden_moves.notes.obsidian",
 					"hidden_moves.kit.cmd.commands",
